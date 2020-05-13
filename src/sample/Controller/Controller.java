@@ -1,8 +1,12 @@
 package sample.Controller;
 
+import sample.Model.Movie;
+import sample.Model.MovieDAO;
 import sample.Model.User;
 import sample.Model.UserDAO;
 import sample.Utils.Validation;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,8 +17,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Controller {
 
@@ -49,7 +55,29 @@ public class Controller {
     @FXML
     private RadioButton rbDisney;
     @FXML
+    private ComboBox comboNum;
+    @FXML
+    private TextField titleField;
+    @FXML
+    private TextField authorField;
+    @FXML
+    private Button create;
+    @FXML
+    private Label warning;
+    @FXML
+    private TableView table;
+    @FXML
+    private TextField id;
+    @FXML
     private CheckBox admin;
+    @FXML
+    private Button update;
+    @FXML
+    private Button delete;
+    @FXML
+    private Label logname;
+    @FXML
+    private Label role;
 
     ResultSet rsAllEntries;
     ObservableList<ObservableList> data = FXCollections.observableArrayList();
@@ -60,7 +88,7 @@ public class Controller {
             String msg = userDAO.login(username.getText(), password.getText());
             if (msg.contains("Successful")) {
                 User user = userDAO.getUser(username.getText());
-                System.out.println("logged in");
+                dashboard(event, user);
             } else {
                 error.setText(msg);
             }
@@ -125,7 +153,7 @@ public class Controller {
         }
 
         if (isRegistered) {
-            User user = new User(regUser.getText(), regPassw.getText(), regEmail.getText(), admin.isSelected());
+            User user = new User(regUser.getText(), regPassw.getText(), regEmail.getText(),admin.isSelected());
             UserDAO userDAO = new UserDAO();
             String msg = userDAO.register(user);
             if (msg.contains("successfully")) {
@@ -145,4 +173,198 @@ public class Controller {
             }
         }
     }
+
+    public void dashboard(ActionEvent event, User user) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("../view/dashboard.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Dashboard");
+            stage.setScene(new Scene(root, 1274, 850));
+
+            Label lblLoginName = (Label) root.lookup("#logname");
+            Label lblLoginRole = (Label) root.lookup("#role");
+            if (lblLoginName != null) lblLoginName.setText(user.getUsername());
+            if (lblLoginRole != null) lblLoginRole.setText(user.isAdmin() ? "Admin" : "User");
+
+            stage.show();
+            ((Node) (event.getSource())).getScene().getWindow().hide();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void create() {
+        String title = titleField.getText();
+        String author = authorField.getText();
+
+        String genre = "";
+        if (cbHorror.isSelected()) {
+            genre += cbHorror.getText() + ",";
+        }
+        if (cbRomance.isSelected()) {
+            genre += cbRomance.getText() + ",";
+        }
+        if (cbAction.isSelected()) {
+            genre += cbAction.getText() + ",";
+        }
+
+        String platform = "";
+        if (rbHulu.isSelected()) {
+            platform += rbHulu.getText();
+        } else if (rbDisney.isSelected()) {
+            platform += rbDisney.getText();
+        } else if (rbNetflix.isSelected()) {
+            platform += rbNetflix.getText();
+        }
+        String rating = "";
+        if (!comboNum.getSelectionModel().isEmpty()) {
+            rating = comboNum.getSelectionModel().getSelectedItem().toString();
+        } else {
+            warning.setText("Please check team members");
+        }
+
+        if (!Validation.isValidTitle(title)) {
+            warning.setText("TeamName Required");
+        } else if (!Validation.isValidAuthor(author)) {
+            warning.setText("SureName Required");
+        } else {
+            UserDAO userDAO = new UserDAO();
+            User user = userDAO.getUser(logname.getText());
+            Movie movie = new Movie(title, author, Integer.parseInt(rating), platform, genre, user.getId());
+            MovieDAO movieDAO = new MovieDAO();
+            String msg = movieDAO.add(movie);
+            warning.setText(msg);
+
+            updateTableFromDB(""); // get all entries after new entry creation (including new one created)
+        }
+    }
+
+    public void search() {
+        updateTableFromDB(titleField.getText()); // get entries according team name
+    }
+
+    public void updateTableFromDB(String title) {
+        MovieDAO movieDAO = new MovieDAO();
+        UserDAO userDAO = new UserDAO();
+        User user = userDAO.getUser(logname.getText());
+        try {
+            rsAllEntries = movieDAO.searchByTitle(title, user);
+        } catch (NullPointerException e) {
+            warning.setText("No rows to display");
+        }
+        fetchColumnList();
+        fetchRowList();
+    }
+
+    public void update() {
+        if(role.getText().equals("Admin")) {
+            String userId = id.getText();
+            int movieId = (Integer.parseInt(id.getText()));
+            String title = titleField.getText();
+            String author = authorField.getText();
+
+            String genre = "";
+            if (cbHorror.isSelected()) {
+                genre += cbHorror.getText() + ",";
+            }
+            if (cbRomance.isSelected()) {
+                genre += cbRomance.getText() + ",";
+            }
+            if (cbAction.isSelected()) {
+                genre += cbAction.getText() + ",";
+            }
+
+            String platform = "";
+            if (rbHulu.isSelected()) {
+                platform += rbHulu.getText();
+            } else if (rbDisney.isSelected()) {
+                platform += rbDisney.getText();
+            } else if (rbNetflix.isSelected()) {
+                platform += rbNetflix.getText();
+            }
+            String rating = "";
+            if (!comboNum.getSelectionModel().isEmpty()) {
+                rating = comboNum.getSelectionModel().getSelectedItem().toString();
+            } else {
+                warning.setText("Please check team members");
+            }
+
+            if (!Validation.isValidTitle(title)) {
+                warning.setText("TeamName Required");
+            } else if (!Validation.isValidAuthor(author)) {
+                warning.setText("SureName Required");
+            } else {
+                Movie movie = new Movie(movieId, title, author, Integer.parseInt(rating), platform, genre, Integer.parseInt(userId));
+                MovieDAO movieDAO = new MovieDAO();
+                movieDAO.editById(movie);
+
+                updateTableFromDB(""); // get all entries after entry update (including newly updated)
+            }
+        } else {
+            warning.setText("Update feature is only for admins");
+        }
+    }
+
+    public void delete() {
+        if (role.getText().equals("Admin")) {
+            MovieDAO movieDAO = new MovieDAO();
+            movieDAO.deleteById(Integer.parseInt((String) (id.getText())));
+
+            updateTableFromDB(""); // get all entries after entry delete
+        } else {
+            warning.setText("Delete feature is only for admins");
+        }
+    }
+
+    private void fetchColumnList() {
+        try {
+            table.getColumns().clear();
+
+            if (rsAllEntries != null) {
+                //SQL FOR SELECTING ALL OF CUSTOMER
+                for (int i = 0; i < rsAllEntries.getMetaData().getColumnCount(); i++) {
+                    //We are using non property style for making dynamic table
+                    final int j = i;
+                    TableColumn col = new TableColumn(rsAllEntries.getMetaData().getColumnName(i + 1).toUpperCase());
+                    col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
+                        public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
+                            return new SimpleStringProperty(param.getValue().get(j).toString());
+                        }
+                    });
+
+                    table.getColumns().removeAll(col);
+                    table.getColumns().addAll(col);
+                }
+            } else {
+                warning.setText("No columns to display");
+            }
+        } catch (SQLException e) {
+            warning.setText("Failure in getting all entries");
+        }
+    }
+
+    private void fetchRowList() {
+        try {
+            data.clear();
+            if (rsAllEntries != null) {
+                while (rsAllEntries.next()) {
+                    //Iterate Row
+                    ObservableList row = FXCollections.observableArrayList();
+                    for (int i = 1; i <= rsAllEntries.getMetaData().getColumnCount(); i++) {
+                        //Iterate Column
+                        row.add(rsAllEntries.getString(i));
+                    }
+                    data.add(row);
+                }
+                //Connects table with list
+                table.setItems(data);
+            } else {
+                warning.setText("No rows to display");
+            }
+        } catch (SQLException ex) {
+            warning.setText("Failure in getting all entries");
+        }
+    }
+
+
 }

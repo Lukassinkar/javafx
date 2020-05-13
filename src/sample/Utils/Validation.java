@@ -28,5 +28,17 @@ public class Validation {
         Matcher matcher = pattern.matcher(regEmail);
         return matcher.find();
     }
+
+    public static boolean isValidTitle(String title) {
+        Pattern pattern = Pattern.compile(TITLE_REGEX_PATTERN);
+        Matcher matcher = pattern.matcher(title);
+        return matcher.find();
+    }
+
+    public static boolean isValidAuthor(String author) {
+        Pattern pattern = Pattern.compile(AUTHOR_REGEX_PATTERN);
+        Matcher matcher = pattern.matcher(author);
+        return matcher.find();
+    }
 }
 

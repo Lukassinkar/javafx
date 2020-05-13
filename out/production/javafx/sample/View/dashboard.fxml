@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="854.0" prefWidth="1274.0" style="-fx-background-color: #f1dca7;" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller.Controller">
+    <children>
+        <Pane layoutX="12.0" layoutY="115.0" prefHeight="728.0" prefWidth="1250.0">
+            <children>
+                <ScrollPane layoutX="490.0" layoutY="14.0" prefHeight="691.0" prefWidth="750.0">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="688.0" prefWidth="747.0" style="-fx-border-color: #656565; -fx-border-width: 2px; -fx-border-radius: 3px;">
+                            <children>
+                                <TableView fx:id="table" layoutX="14.0" layoutY="14.0" prefHeight="659.0" prefWidth="720.0" style="-fx-background-color: #f1dca7;">
+                                    <columns>
+                                    </columns>
+                                </TableView>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </ScrollPane>
+            </children>
+        </Pane>
+        <Pane layoutX="26.0" layoutY="130.0" prefHeight="691.0" prefWidth="454.0" style="-fx-border-color: #656565; -fx-border-width: 2px; -fx-border-radius: 3px;">
+            <children>
+                <TextField fx:id="titleField" layoutX="14.0" layoutY="96.0" prefHeight="25.0" prefWidth="415.0" promptText="Title">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </TextField>
+                <TextField fx:id="authorField" layoutX="14.0" layoutY="159.0" prefHeight="25.0" prefWidth="415.0" promptText="Author">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </TextField>
+                <TextField fx:id="id" layoutX="14.0" layoutY="33.0" prefHeight="25.0" prefWidth="415.0" promptText="ID (only for delete/ update)">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </TextField>
+                <Button fx:id="create" layoutX="18.0" layoutY="559.0" mnemonicParsing="false" onAction="#create" prefHeight="39.0" prefWidth="184.0" style="-fx-background-color: #d08c60;" text="CREATE" textFill="WHITE">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Button>
+                <Button fx:id="read" layoutX="249.0" layoutY="559.0" mnemonicParsing="false" onAction="#search" prefHeight="39.0" prefWidth="184.0" style="-fx-background-color: #d08c60;" text="SEARCH" textFill="WHITE">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Button>
+                <Button fx:id="update" layoutX="18.0" layoutY="624.0" mnemonicParsing="false" onAction="#update" prefHeight="39.0" prefWidth="184.0" style="-fx-background-color: #d08c60;" text="UPDATE" textFill="WHITE">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Button>
+                <Button fx:id="delete" layoutX="249.0" layoutY="624.0" mnemonicParsing="false" onAction="#delete" prefHeight="39.0" prefWidth="184.0" style="-fx-background-color: #d08c60;" text="DELETE" textFill="WHITE">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Button>
+                <Label fx:id="warning" layoutX="18.0" layoutY="504.0" prefHeight="17.0" prefWidth="415.0">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <ComboBox fx:id="comboNum" layoutX="15.0" layoutY="457.0" prefHeight="25.0" prefWidth="415.0" promptText="Rating">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="1" />
+                            <String fx:value="2" />
+                            <String fx:value="3" />
+                            <String fx:value="4" />
+                            <String fx:value="5" />
+                            <String fx:value="6" />
+                            <String fx:value="7" />
+                            <String fx:value="8" />
+                            <String fx:value="9" />
+                            <String fx:value="10" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <CheckBox fx:id="cbHorror" layoutX="46.0" layoutY="279.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="128.0" text="Horror" />
+                <CheckBox fx:id="cbRomance" layoutX="46.0" layoutY="304.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="112.0" text="Romance" />
+                <CheckBox fx:id="cbAction" layoutX="46.0" layoutY="251.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="157.0" text="Action" />
+                <RadioButton fx:id="rbNetflix" layoutX="46.0" layoutY="371.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="128.0" text="Netflix">
+                    <toggleGroup>
+                        <ToggleGroup fx:id="racing_car" />
+                    </toggleGroup></RadioButton>
+                <RadioButton fx:id="rbHulu" layoutX="46.0" layoutY="395.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="128.0" text="Hulu" toggleGroup="$racing_car" />
+                <RadioButton fx:id="rbDisney" layoutX="46.0" layoutY="420.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="128.0" selected="true" text="Disney " toggleGroup="$racing_car" />
+                <Label layoutX="15.0" layoutY="213.0" prefHeight="27.0" prefWidth="97.0" text="Genre:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <Label layoutX="15.0" layoutY="334.0" prefHeight="27.0" prefWidth="151.0" text="Platform:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+            </children>
+        </Pane>
+        <Pane prefHeight="117.0" prefWidth="1274.0" style="-fx-border-width: 0 0 2px 0; -fx-background-color: #997b66; -fx-border-color: #656565;" />
+        <Text fill="#fcfcfc" layoutX="179.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Movie Database" wrappingWidth="852.41015625">
+            <font>
+                <Font name="Showcard Gothic" size="72.0" />
+            </font>
+        </Text>
+        <Pane fx:id="controlpanel" layoutX="885.0" layoutY="8.0" prefHeight="109.0" prefWidth="388.0">
+            <children>
+                <Label layoutX="12.0" layoutY="15.0" prefWidth="90.0" text="Username:" textFill="WHITE">
+                    <font>
+                        <Font size="18.0" />
+                    </font></Label>
+                <Label layoutX="60.0" layoutY="59.0" text="Role:" textFill="WHITE">
+                    <font>
+                        <Font size="18.0" />
+                    </font></Label>
+
+                <Button contentDisplay="TOP" layoutX="290.0" layoutY="15.0" mnemonicParsing="false" onAction="#logOut" prefHeight="25.0" prefWidth="64.0" style="-fx-background-color: d08c60;" text="Logout" textFill="WHITE">
+                    <font>
+                        <Font size="14.0" />
+                    </font></Button>
+                <Label fx:id="logname" layoutX="116.0" layoutY="15.0" prefHeight="17.0" prefWidth="121.0" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font></Label>
+                <Label fx:id="role" layoutX="116.0" layoutY="59.0" prefHeight="17.0" prefWidth="121.0" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font></Label>
+            </children></Pane>
+    </children>
+</Pane>
