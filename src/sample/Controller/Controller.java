@@ -112,7 +112,6 @@ public class Controller {
         }
     }
 
-    // button 'X' closes stage(window)
     public void closeWindow(ActionEvent event) {
         if (event.getSource() == close) {
             System.exit(0);
@@ -121,7 +120,6 @@ public class Controller {
 
     public void register(ActionEvent event) {
         try {
-            // we are in controller folder, but our view is not here, so we need to go one step up - ../
             Parent root = FXMLLoader.load(getClass().getResource("../view/register.fxml"));
             Stage stage = new Stage();
             stage.setTitle("Register");
@@ -136,7 +134,6 @@ public class Controller {
     public void registerLogin(ActionEvent event) {
         boolean isRegistered = true;
 
-        // clear errors on btn pressed
         regError.setText("");
         if (!Validation.isValidUsername(regUser.getText())) {
             regError.setText("Username is incorrect (letters and numbers only, at least 5 char)");
@@ -163,7 +160,6 @@ public class Controller {
                     stage.setTitle("Login");
                     stage.setScene(new Scene(root, 450, 350));
                     stage.show();
-                    // hides current stage (window)
                     ((Node) (event.getSource())).getScene().getWindow().hide();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -220,13 +216,13 @@ public class Controller {
         if (!comboNum.getSelectionModel().isEmpty()) {
             rating = comboNum.getSelectionModel().getSelectedItem().toString();
         } else {
-            warning.setText("Please check team members");
+            warning.setText("Please check rating");
         }
 
         if (!Validation.isValidTitle(title)) {
-            warning.setText("TeamName Required");
+            warning.setText("Title Required");
         } else if (!Validation.isValidAuthor(author)) {
-            warning.setText("SureName Required");
+            warning.setText("Author Required");
         } else {
             UserDAO userDAO = new UserDAO();
             User user = userDAO.getUser(logname.getText());
@@ -235,12 +231,12 @@ public class Controller {
             String msg = movieDAO.add(movie);
             warning.setText(msg);
 
-            updateTableFromDB(""); // get all entries after new entry creation (including new one created)
+            updateTableFromDB("");
         }
     }
 
     public void search() {
-        updateTableFromDB(titleField.getText()); // get entries according team name
+        updateTableFromDB(titleField.getText());
     }
 
     public void updateTableFromDB(String title) {
@@ -286,19 +282,19 @@ public class Controller {
             if (!comboNum.getSelectionModel().isEmpty()) {
                 rating = comboNum.getSelectionModel().getSelectedItem().toString();
             } else {
-                warning.setText("Please check team members");
+                warning.setText("Please check rating");
             }
 
             if (!Validation.isValidTitle(title)) {
-                warning.setText("TeamName Required");
+                warning.setText("Title Required");
             } else if (!Validation.isValidAuthor(author)) {
-                warning.setText("SureName Required");
+                warning.setText("Author Required");
             } else {
                 Movie movie = new Movie(movieId, title, author, Integer.parseInt(rating), platform, genre, Integer.parseInt(userId));
                 MovieDAO movieDAO = new MovieDAO();
                 movieDAO.editById(movie);
 
-                updateTableFromDB(""); // get all entries after entry update (including newly updated)
+                updateTableFromDB("");
             }
         } else {
             warning.setText("Update feature is only for admins");
@@ -321,9 +317,7 @@ public class Controller {
             table.getColumns().clear();
 
             if (rsAllEntries != null) {
-                //SQL FOR SELECTING ALL OF CUSTOMER
                 for (int i = 0; i < rsAllEntries.getMetaData().getColumnCount(); i++) {
-                    //We are using non property style for making dynamic table
                     final int j = i;
                     TableColumn col = new TableColumn(rsAllEntries.getMetaData().getColumnName(i + 1).toUpperCase());
                     col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
@@ -348,15 +342,12 @@ public class Controller {
             data.clear();
             if (rsAllEntries != null) {
                 while (rsAllEntries.next()) {
-                    //Iterate Row
                     ObservableList row = FXCollections.observableArrayList();
                     for (int i = 1; i <= rsAllEntries.getMetaData().getColumnCount(); i++) {
-                        //Iterate Column
                         row.add(rsAllEntries.getString(i));
                     }
                     data.add(row);
                 }
-                //Connects table with list
                 table.setItems(data);
             } else {
                 warning.setText("No rows to display");

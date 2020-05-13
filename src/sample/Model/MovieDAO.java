@@ -34,16 +34,16 @@ public class MovieDAO {
 
     public ResultSet searchByTitle(String title, User user){
         String query = "";
-        if (user.isAdmin()) { // display all results- it's admin after all ;)
-            if (title.equals("")) {//Admin didn't entered any team_name - displaying all entries
+        if (user.isAdmin()) {
+            if (title.equals("")) {
                 query = "SELECT * FROM " + TABLE;
-            } else {// Admin entered team_name displaying specific entries
+            } else {
                 query = "SELECT * FROM " + TABLE + " WHERE title LIKE '" + title + "'";
             }
-        } else { // display only specific user results
-            if (title.equals("")) {//User didn't entered any team_name - displaying all entries created by him
+        } else {
+            if (title.equals("")) {
                 query = "SELECT * FROM " + TABLE + " WHERE user_id = '" + user.getId() + "'";
-            } else {// User entered team_name displaying specific entries created by him
+            } else {
                 query = "SELECT * FROM " + TABLE + " WHERE user_id = '" + user.getId() + "' AND title LIKE '" + title + "'";
             }
         }
@@ -79,9 +79,9 @@ public class MovieDAO {
             preparedStatement.setInt(6, movie.getUserId());
             preparedStatement.executeUpdate();
 
-            System.out.println("Pavyko paredaguoti esama irasa");
+            System.out.println("Successfully updated movie");
         } catch (SQLException e) {
-            System.out.println("Ivyko klaida redaguojant esama irasa");
+            System.out.println("Failure updating movie");
             e.printStackTrace();
         }
     }
@@ -95,9 +95,9 @@ public class MovieDAO {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
 
-            System.out.println("Pavyko istrinti esama irasa");
+            System.out.println("Successfully deleted movie");
         } catch (SQLException e) {
-            System.out.println("Ivyko klaida istrinant esama irasa");
+            System.out.println("Failure deleting movie");
             e.printStackTrace();
         }
     }
